@@ -2,6 +2,7 @@
 import React from 'react';
 import Hero from './components/Hero';
 import TravelSection from './components/TravelSection';
+import FamilySection from './components/FamilySection';
 import RecipeBot from './components/RecipeBot';
 import DigitalSection from './components/DigitalSection';
 import ContactSection from './components/ContactSection';
@@ -16,6 +17,7 @@ const App: React.FC = () => {
       <main className="relative z-10">
         <Hero />
         <TravelSection />
+        <FamilySection />
         <RecipeBot />
         <DigitalSection />
         <ContactSection />
