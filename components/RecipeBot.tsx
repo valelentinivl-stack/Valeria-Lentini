@@ -16,14 +16,17 @@ const RecipeBot: React.FC = () => {
     setError(null);
     setRecipeText(null);
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      // Prova a leggere la chiave da diverse possibili variabili (Vite standard o fallback process.env)
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (process.env as any).API_KEY;
+      
       if (!apiKey) {
-        throw new Error("Chiave API non trovata. Assicurati di aver impostato VITE_GEMINI_API_KEY nelle impostazioni di Vercel e di aver rifatto il deploy.");
+        throw new Error("Chiave API non trovata. Assicurati di aver aggiunto VITE_GEMINI_API_KEY (o API_KEY) nelle Environment Variables di Vercel.");
       }
+      
       const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: 'gemini-flash-latest',
-        contents: query,
+        contents: [{ role: 'user', parts: [{ text: query }] }],
         config: {
           systemInstruction: `Agisci come uno chef italiano esperto. Crea una ricetta originale basata sugli ingredienti forniti dall'utente.
           Regole:
@@ -42,15 +45,17 @@ const RecipeBot: React.FC = () => {
           temperature: 0.8,
         },
       });
+      
       const text = response.text;
       if (text) {
         setRecipeText(text);
       } else {
-        throw new Error("Nessuna risposta ricevuta");
+        throw new Error("Il modello non ha restituito alcun testo. Riprova.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Errore Generazione:", err);
-      setError("Ops! Sembra che i fornelli facciano i capricci. Riprova tra un momento.");
+      // Mostriamo l'errore specifico per aiutare il debug
+      setError(err?.message || "Ops! Sembra che i fornelli facciano i capricci. Riprova tra un momento.");
     } finally {
       setIsLoading(false);
       setTimeout(() => {
