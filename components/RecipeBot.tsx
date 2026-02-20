@@ -18,11 +18,11 @@ const RecipeBot: React.FC = () => {
     try {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       if (!apiKey) {
-        throw new Error("API Key non configurata. Verifica le impostazioni su Vercel.");
+        throw new Error("Chiave API non trovata. Assicurati di aver impostato VITE_GEMINI_API_KEY nelle impostazioni di Vercel e di aver rifatto il deploy.");
       }
       const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-flash-latest',
         contents: query,
         config: {
           systemInstruction: `Agisci come uno chef italiano esperto. Crea una ricetta originale basata sugli ingredienti forniti dall'utente.
